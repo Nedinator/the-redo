@@ -1,4 +1,4 @@
-import { registerCommands } from "./CommandHandler";
+import { registerCommands } from "./CommandHandler.js";
 
 export function setupEventHandlers(client) {
     client.on('interactionCreate', async (interaction) => {

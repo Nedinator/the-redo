@@ -1,3 +1,5 @@
+import { registerCommands } from "./CommandHandler";
+
 export function setupEventHandlers(client) {
     client.on('interactionCreate', async (interaction) => {
       if (!interaction.isCommand()) return;
@@ -16,5 +18,12 @@ export function setupEventHandlers(client) {
         await interaction.reply({ content: 'There was an error executing that command!', ephemeral: true });
       }
     });
+
+    client.once('ready', async () => {
+      console.log(`Logged in as ${client.user.tag}!`);
+      await registerCommands(client); 
+      console.log('Commands registered successfully.');
+    });
+    
   }
   

@@ -2,7 +2,7 @@ export function setupEventHandlers(client) {
     client.on('interactionCreate', async (interaction) => {
       if (!interaction.isCommand()) return;
   
-      const command = interaction.client.commands.get(interaction.commandName);
+      const command = client.commands.get(interaction.commandName);
   
       if (!command) {
         await interaction.reply({ content: "Command not found!", ephemeral: true });

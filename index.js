@@ -12,6 +12,7 @@ const client = new Client({
     GatewayIntentBits.GuildMembers,
   ],
 });
+
 client.commands = new Map();
 
 client.once('ready', async () => {

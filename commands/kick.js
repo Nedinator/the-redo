@@ -23,6 +23,13 @@ export default {
 
     const whom = interaction.guild.members.cache.get(who.id);
 
+    if (whom.permissions.has("KICK_MEMBERS")) {
+      return await interaction.reply({
+        content: "That's a mod, silly.",
+        ephemeral: true,
+      });
+    }
+
     if (whom) {
       try {
         whom.kick(why);

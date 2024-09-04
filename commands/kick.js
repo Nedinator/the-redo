@@ -20,7 +20,6 @@ export default {
   async execute(interaction) {
     const who = interaction.options.getUser("who");
     const why = interaction.options.getString("why");
-
     const whom = interaction.guild.members.cache.get(who.id);
 
     if (whom.permissions.has("KICK_MEMBERS")) {

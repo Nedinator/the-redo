@@ -1,7 +1,12 @@
 import { registerCommands } from "./CommandHandler.js";
+import { handleModalSubmit } from "./ModalHandler.js";
 
 export function setupEventHandlers(client) {
   client.on("interactionCreate", async (interaction) => {
+    if (interaction.isModalSubmit()) {
+      return handleModalSubmit(interaction);
+    }
+
     if (!interaction.isCommand()) return;
 
     const command = client.commands.get(interaction.commandName);

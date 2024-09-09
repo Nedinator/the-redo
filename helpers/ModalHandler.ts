@@ -7,6 +7,12 @@ export async function handleModalSubmit(interaction: ModalSubmitInteraction) {
     const targetId = interaction.customId.split("_")[1];
     const member = interaction.guild?.members.cache.get(targetId);
 
+    if (!member)
+      return await interaction.reply({
+        content: "Member not found",
+        ephemeral: true,
+      });
+
     if (!member.bannable) {
       return interaction.reply({
         content:
@@ -48,7 +54,7 @@ export async function handleModalSubmit(interaction: ModalSubmitInteraction) {
     );
 
     if (memberDoc) {
-      memberDoc.bans = memberDoc.bans.push(banLog);
+      memberDoc.bans.push(banLog);
       memberDoc.markModified("bans");
       memberDoc.save().catch((err) => console.log(err));
     } else {

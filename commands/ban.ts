@@ -5,6 +5,7 @@ import {
   TextInputBuilder,
   TextInputStyle,
   ActionRowBuilder,
+  ChatInputCommandInteraction,
 } from "discord.js";
 
 export default {
@@ -18,22 +19,23 @@ export default {
         .setDescription("who are you banning")
         .setRequired(true)
     ),
-  async execute(interaction) {
+  async execute(interaction: ChatInputCommandInteraction) {
     const target = interaction.options.getUser("target");
-
-    const banModal = new ModalBuilder()
-      .setCustomId(`banModal_${target.id}`)
-      .setTitle("Ban a member");
 
     const reasonInput = new TextInputBuilder()
       .setCustomId("banReason")
-      .setLabel("Reason for Ban")
+      .setLabel("Reason for the ban")
       .setStyle(TextInputStyle.Paragraph)
-      .setPlaceholder("Enter the reason for banning the user");
+      .setRequired(true);
 
-    const actionRow = new ActionRowBuilder().addComponents(reasonInput);
+    const actionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(
+      reasonInput
+    );
 
-    banModal.addComponents(actionRow);
+    const banModal = new ModalBuilder()
+      .setCustomId("banModal")
+      .setTitle("Ban User")
+      .addComponents(actionRow);
 
     await interaction.showModal(banModal);
   },

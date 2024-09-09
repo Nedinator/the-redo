@@ -1,10 +1,11 @@
+import { ModalSubmitInteraction } from "discord.js";
 import { Member } from "../schemas/member.js";
 
-export async function handleModalSubmit(interaction) {
+export async function handleModalSubmit(interaction: ModalSubmitInteraction) {
   if (interaction.customId.startsWith("banModal")) {
     const reason = interaction.fields.getTextInputValue("banReason");
     const targetId = interaction.customId.split("_")[1];
-    const member = interaction.guild.members.cache.get(targetId);
+    const member = interaction.guild?.members.cache.get(targetId);
 
     if (!member.bannable) {
       return interaction.reply({
@@ -14,6 +15,11 @@ export async function handleModalSubmit(interaction) {
       });
     }
 
+    if (!member)
+      return await interaction.reply({
+        content: "Member not found",
+        ephemeral: true,
+      });
     await member.ban({ reason });
 
     await interaction.reply({
@@ -42,12 +48,12 @@ export async function handleModalSubmit(interaction) {
     );
 
     if (memberDoc) {
-      memberDoc.bans = memberDoc.bans.push(banlog);
+      memberDoc.bans = memberDoc.bans.push(banLog);
       memberDoc.markModified("bans");
       memberDoc.save().catch((err) => console.log(err));
     } else {
       const newMemberDoc = new Member({
-        username: member.tag,
+        username: member.nickname,
         userID: targetId,
         bans: [banLog],
       });

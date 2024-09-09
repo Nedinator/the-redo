@@ -1,4 +1,8 @@
-import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
+import {
+  SlashCommandBuilder,
+  PermissionFlagsBits,
+  ChatInputCommandInteraction,
+} from "discord.js";
 
 export default {
   data: new SlashCommandBuilder()
@@ -17,25 +21,34 @@ export default {
         .setDescription("why are you kicking them")
         .setRequired(true)
     ),
-  async execute(interaction) {
+  async execute(interaction: ChatInputCommandInteraction) {
     const who = interaction.options.getUser("who");
     const why = interaction.options.getString("why");
-    const whom = interaction.guild.members.cache.get(who.id);
+    const whom = interaction.guild?.members.cache.get(
+      who?.id || "No ID found?"
+    );
 
-    if (whom.permissions.has("KICK_MEMBERS")) {
+    if (!whom)
+      return await interaction.reply({
+        content: "Something went wrong and we couldn't find the user",
+        ephemeral: true,
+      });
+
+    if (whom.permissions.has(PermissionFlagsBits.KickMembers)) {
       return await interaction.reply({
         content: "That's a mod, silly.",
         ephemeral: true,
       });
     }
 
-    if (whom) {
+    if (whom && why) {
       try {
         whom.kick(why);
         await interaction.reply({ content: "Job done.", ephemeral: true });
       } catch (err) {
         await interaction.reply({
-          content: "Whoopsie daisy, that didn't work. Check da console.",
+          content: "Whoopsie daisy, that didn't work. . .",
+          ephemeral: true,
         });
         console.log(err);
       }

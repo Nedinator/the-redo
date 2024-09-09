@@ -1,14 +1,15 @@
 import fs from "fs";
 import path from "path";
-import { REST, Routes } from "discord.js";
+import { Collection, REST, Routes } from "discord.js";
 import { fileURLToPath } from "url";
+import { CustomClient } from "../types/CustomClient";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export async function registerCommands(client) {
+export async function registerCommands(client: CustomClient) {
   if (!client.commands) {
-    client.commands = new Map();
+    client.commands = new Collection();
   }
 
   const commands = [];
@@ -24,11 +25,11 @@ export async function registerCommands(client) {
     client.commands.set(command.data.name, command);
   }
 
-  const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
+  const rest = new REST({ version: "10" }).setToken(process.env.TOKEN || "");
 
   try {
     console.log("Started refreshing application (/) commands.");
-
+    if (!client.user) throw new Error("Client wasn't initialized.");
     await rest.put(Routes.applicationCommands(client.user.id), {
       body: commands,
     });

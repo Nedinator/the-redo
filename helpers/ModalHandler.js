@@ -34,6 +34,7 @@ export async function handleModalSubmit(interaction) {
       userID: targetId,
       date: prettyDate,
       reason: reason,
+      issuedBy: interaction.user.id,
     };
 
     const memberDoc = await Member.findOne({ userID: targetId }).catch((err) =>
@@ -46,7 +47,7 @@ export async function handleModalSubmit(interaction) {
       memberDoc.save().catch((err) => console.log(err));
     } else {
       const newMemberDoc = new Member({
-        username: member.username,
+        username: member.tag,
         userID: targetId,
         bans: [banLog],
       });

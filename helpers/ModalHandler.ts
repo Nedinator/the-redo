@@ -1,5 +1,6 @@
 import { ModalSubmitInteraction } from "discord.js";
 import { Member } from "../schemas/member.js";
+import { MemberDocument } from "../types/Member.js";
 
 export async function handleModalSubmit(interaction: ModalSubmitInteraction) {
   if (interaction.customId.startsWith("banModal")) {

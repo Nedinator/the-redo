@@ -1,12 +1,12 @@
 import {
   ChatInputCommandInteraction,
-  Embed,
   EmbedBuilder,
   InteractionResponse,
   ModalSubmitInteraction,
 } from "discord.js";
 import { Config } from "../schemas/config";
 import { ConfigDocument } from "../types/Config";
+import { Canvas, createCanvas } from "canvas";
 
 export async function getCaptchaStatus(
   interaction: ChatInputCommandInteraction | ModalSubmitInteraction
@@ -65,6 +65,32 @@ export async function getConfigAndReply(
   return interaction.reply({ embeds: [confEmbed], ephemeral: true });
 }
 
-export async function generateCaptchaImage(target: string) {
-  //
+const WIDTH = 200;
+const HEIGHT = 100;
+const FONT_SIZE = 40;
+
+export function generateCaptchaText(length: number): string {
+  const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let captchaText = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    captchaText += charset[randomIndex];
+  }
+  return captchaText;
+}
+
+export function createCaptchaImage(text: string): Buffer {
+  const canvas = createCanvas(WIDTH, HEIGHT);
+  const ctx = canvas.getContext("2d");
+
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+  ctx.fillStyle = "#000000";
+  ctx.font = `${FONT_SIZE}px Arial`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(text, WIDTH / 2, HEIGHT / 2);
+
+  return canvas.toBuffer();
 }

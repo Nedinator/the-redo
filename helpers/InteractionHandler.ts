@@ -1,7 +1,13 @@
 import { registerCommands } from "./CommandHandler.js";
 import { handleModalSubmit } from "./ModalHandler.js";
-import { GuildMember, Interaction } from "discord.js";
+import {
+  GuildMember,
+  Interaction,
+  AttachmentBuilder,
+  EmbedBuilder,
+} from "discord.js";
 import { CustomClient } from "../types/CustomClient.js";
+import { generateCaptchaText, createCaptchaImage } from "./CaptchaHandler.js";
 
 export function setupEventHandlers(client: CustomClient) {
   client.on("interactionCreate", async (interaction: Interaction) => {
@@ -43,5 +49,21 @@ export function setupEventHandlers(client: CustomClient) {
 
   client.on("guildMemberAdd", async (member: GuildMember) => {
     // TODO: Handle member join with captcha lock.
+    const randomText = generateCaptchaText(8);
+    const img = createCaptchaImage(randomText);
+
+    const attachment = new AttachmentBuilder(img);
+    const embed = new EmbedBuilder()
+      .setTitle("Captcha!")
+      .setDescription(
+        "Please reply back with `/captcha code: code here` to gain access to the server."
+      )
+      .setColor("Blurple");
+
+    try {
+      member.send({ embeds: [embed], files: [attachment] });
+    } catch (err) {
+      console.error(err);
+    }
   });
 }

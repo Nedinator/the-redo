@@ -2,8 +2,8 @@ import { Schema, model } from "mongoose";
 import { MemberDocument } from "../types/Member";
 
 const memberSchema = new Schema<MemberDocument>({
-  username: String,
-  userID: String,
+  username: { type: String, required: true },
+  userID: { type: String, required: true },
   warnings: {
     type: [{ reason: String, date: String, issuedBy: String }],
     default: [],

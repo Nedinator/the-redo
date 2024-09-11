@@ -1,6 +1,6 @@
 import { registerCommands } from "./CommandHandler.js";
 import { handleModalSubmit } from "./ModalHandler.js";
-import { Interaction } from "discord.js";
+import { GuildMember, Interaction } from "discord.js";
 import { CustomClient } from "../types/CustomClient.js";
 
 export function setupEventHandlers(client: CustomClient) {
@@ -39,5 +39,9 @@ export function setupEventHandlers(client: CustomClient) {
       throw new Error("Client is not ready, user is null");
     }
     console.log("Commands registered successfully.");
+  });
+
+  client.on("guildMemberAdd", async (member: GuildMember) => {
+    // TODO: Handle member join with captcha lock.
   });
 }
